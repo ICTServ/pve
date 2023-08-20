@@ -115,7 +115,7 @@ if [ -z "$XS_PIGZ" ] ; then
 fi
 # Bugfix: high swap usage with low memory usage
 if [ -z "$XS_SWAPPINESS" ] ; then
-    XS_SWAPPINESS="yes"
+    XS_SWAPPINESS="no"
 fi
 # Enable TCP BBR congestion control
 if [ -z "$XS_TCPBBR" ] ; then
@@ -139,7 +139,7 @@ if [ -z "$XS_TIMEZONE" ] ; then
 fi
 # Install common system utilities
 if [ -z "$XS_UTILS" ] ; then
-    XS_UTILS="no"
+    XS_UTILS="yes"
 fi
 # Increase vzdump backup speed
 if [ -z "$XS_VZDUMP" ] ; then
