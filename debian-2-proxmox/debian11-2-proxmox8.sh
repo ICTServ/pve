@@ -153,10 +153,7 @@ pveum usermod admin@pve -group admin
 # export NO_MOTD_BANNER=true
 
 echo "Fetching postinstall script"
-wget https://raw.githubusercontent.com/ICTServ/pve/main/install-post.sh -c -O install-post.sh && chmod +x install-post.sh
-if grep -q '#!/usr/bin/env bash' "install-post.sh"; then
-  bash install-post.sh
-fi
+curl -sLS https://raw.githubusercontent.com/ICTServ/pve/main/install-post.sh | sh
 
 echo "Setting admin user password"
 pveum passwd admin@pve
