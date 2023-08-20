@@ -135,7 +135,7 @@ if [ -z "$XS_TIMESYNC" ] ; then
 fi
 # Set Timezone, empty = set automatically by IP
 if [ -z "$XS_TIMEZONE" ] ; then
-    XS_TIMEZONE=""
+    XS_TIMEZONE="Africa/Addis_Ababa"
 fi
 # Install common system utilities
 if [ -z "$XS_UTILS" ] ; then
