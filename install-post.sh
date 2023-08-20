@@ -242,7 +242,7 @@ if [ "${XS_APTUPGRADE,,}" == "yes" ] ; then
 fi
 
 # Install packages which are sometimes missing on some Proxmox installs.
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux proxmox-backup-restore-image chrony
 
 if [ "${XS_UTILS,,}" == "yes" ] ; then
 # Install common system utilities
