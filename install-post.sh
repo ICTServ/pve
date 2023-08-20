@@ -266,26 +266,26 @@ deb https://security.debian.org/debian-security ${OS_CODENAME}/updates main cont
 EOF
 
 # Refresh the package lists
-apt-get update > /dev/null 2>&1
+apt update > /dev/null 2>&1
 
 # Remove conflicting utilities
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' purge ntp openntpd systemd-timesyncd
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' purge ntp openntpd systemd-timesyncd
 
 # Fixes for common apt repo errors
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install apt-transport-https debian-archive-keyring ca-certificates curl
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install apt-transport-https debian-archive-keyring ca-certificates curl
 
 if [ "${XS_APTUPGRADE,,}" == "yes" ] ; then
     # update proxmox and install various system utils
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' dist-upgrade
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' dist-upgrade
     pveam update
 fi
 
 # Install packages which are sometimes missing on some Proxmox installs.
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux proxmox-backup-restore-image chrony
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux proxmox-backup-restore-image chrony
 
 if [ "${XS_UTILS,,}" == "yes" ] ; then
 # Install common system utilities
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install \
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install \
     axel \
     build-essential \
     curl \
@@ -321,7 +321,7 @@ if [ "${XS_CEPH,,}" == "yes" ] ; then
     # Add the latest ceph provided by proxmox
     echo "deb http://download.proxmox.com/debian/ceph-pacific ${OS_CODENAME} main" > /etc/apt/sources.list.d/ceph-pacific.list
     ## Refresh the package lists
-    apt-get update > /dev/null 2>&1
+    apt update > /dev/null 2>&1
     ## Install ceph support
     echo "Y" | pveceph install
 fi
@@ -332,25 +332,25 @@ if [ "${XS_LYNIS,,}" == "yes" ] ; then
     ## Add the latest lynis
     echo "deb https://packages.cisofy.com/community/lynis/deb/ stable main" > /etc/apt/sources.list.d/cisofy-lynis.list
     ## Refresh the package lists
-    apt-get update > /dev/null 2>&1
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install lynis
+    apt update > /dev/null 2>&1
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install lynis
 fi
 
 if [ "${XS_OPENVSWITCH,,}" == "yes" ] && [ "${XS_IFUPDOWN2}" == "no" ] ; then
     ## Install openvswitch for a virtual internal network
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install ifenslave ifupdown
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' remove ifupdown2
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install openvswitch-switch
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install ifenslave ifupdown
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' remove ifupdown2
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install openvswitch-switch
 else
     ## Install ifupdown2 for a virtual internal network allows rebootless networking changes (not compatible with openvswitch-switch)
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' purge openvswitch-switch
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install ifupdown2
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' remove ifenslave ifupdown
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' purge openvswitch-switch
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install ifupdown2
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' remove ifenslave ifupdown
 fi
 
 if [ "${XS_ZFSAUTOSNAPSHOT,,}" == "yes" ] ; then
     ## Install zfs-auto-snapshot
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install zfs-auto-snapshot
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfs-auto-snapshot
     # make 5min snapshots , keep 12 5min snapshots
     if [ -f "/etc/cron.d/zfs-auto-snapshot" ] ; then
       sed -i 's|--keep=[0-9]*|--keep=12|g' /etc/cron.d/zfs-auto-snapshot
@@ -376,7 +376,7 @@ fi
 
 if [ "${XS_KSMTUNED,,}" == "yes" ] ; then
     ## Ensure ksmtuned (ksm-control-daemon) is enabled and optimise according to ram size
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install ksm-control-daemon
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install ksm-control-daemon
     if [[ RAM_SIZE_GB -le 16 ]] ; then
         # start at 50% full
         KSM_THRES_COEF=50
@@ -425,20 +425,20 @@ if [ "${XS_AMDFIXES,,}" == "yes" ] ; then
         echo "options kvm report_ignored_msrs=N" >> /etc/modprobe.d/kvm.conf
 
         echo "Installing kernel 5.15"
-        /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install pve-kernel-5.15
+        /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install pve-kernel-5.15
     fi
 fi
 
 if [ "${XS_KERNELHEADERS,,}" == "yes" ] ; then
     ## Install kernel source headers
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install pve-headers module-assistant
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install pve-headers module-assistant
 fi
 
 # if [ "$XS_KEXEC" == "yes" ] ; then
 #     ## Install kexec, allows for quick reboots into the latest updated kernel set as primary in the boot-loader.
 #     # use command 'reboot-quick'
 #     echo "kexec-tools kexec-tools/load_kexec boolean false" | debconf-set-selections
-#     /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install kexec-tools
+#     /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install kexec-tools
 #     cat <<'EOF' > /etc/systemd/system/kexec-pve.service
 # [Unit]
 # Description=Loading new kernel into memory
@@ -490,20 +490,20 @@ if [ "${XS_GUESTAGENT,,}" == "yes" ] ; then
     ## Detect if is running in a virtual machine and install the relavant guest agent
     if [ "$(dmidecode -s system-manufacturer | xargs)" == "QEMU" ] || [ "$(systemd-detect-virt | xargs)" == "kvm" ] ; then
       echo "QEMU Detected, installing guest agent"
-      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install qemu-guest-agent
+      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install qemu-guest-agent
     elif [ "$(systemd-detect-virt | xargs)" == "vmware" ] ; then
       echo "VMware Detected, installing vm-tools"
-      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install open-vm-tools
+      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install open-vm-tools
     elif [ "$(systemd-detect-virt | xargs)" == "oracle" ] ; then
       echo "Virtualbox Detected, installing guest-utils"
-      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install virtualbox-guest-utils
+      /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install virtualbox-guest-utils
     fi
 fi
 
 if [ "${XS_PIGZ,,}" == "yes" ] ; then
     ## Set pigz to replace gzip, 2x faster gzip compression
     sed -i "s/#pigz:.*/pigz: 1/" /etc/vzdump.conf
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install pigz
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install pigz
     cat  <<EOF > /bin/pigzwrapper
 #!/bin/sh
 # eXtremeSHOK.com
@@ -529,7 +529,7 @@ fi
 
 if [ "${XS_FAIL2BAN,,}" == "yes" ] ; then
     ## Protect the web interface with fail2ban
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install fail2ban
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install fail2ban
     # shellcheck disable=1117
 cat <<EOF > /etc/fail2ban/filter.d/proxmox.conf
 [Definition]
@@ -700,7 +700,7 @@ fi
 
 if [ "${XS_ENTROPY,,}" == "yes" ] ; then
 ## Ensure Entropy Pools are Populated, prevents slowdowns whilst waiting for entropy
-    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' install haveged
+    /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install haveged
     ## Net optimising
     cat <<EOF > /etc/default/haveged
 # eXtremeSHOK.com
@@ -926,8 +926,8 @@ pve-efiboot-tool refresh
 
 # cleanup
 ## Remove no longer required packages and purge old cached updates
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' autoremove
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::='--force-confdef' autoclean
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' autoremove
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' autoclean
 
 echo "# eXtremeSHOK.com" > /etc/extremeshok
 date >> /etc/extremeshok
