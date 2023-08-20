@@ -1,43 +1,4 @@
 #!/usr/bin/env bash
-################################################################################
-# This is property of eXtremeSHOK.com
-# You are free to use, modify and distribute, however you may not remove this notice.
-# Copyright (c) Adrian Jon Kriel :: admin@extremeshok.com
-################################################################################
-#
-# Script updates can be found at: https://github.com/extremeshok/xshok-proxmox
-#
-# post-installation script for Proxmox
-#
-# License: BSD (Berkeley Software Distribution)
-#
-################################################################################
-#
-# Tested on Proxmox Version: 7.1
-#
-# Assumptions: Proxmox installed
-#
-# Notes:
-# openvswitch will be disabled (removed) when ifupdown2 is enabled
-# ifupdown2 will be disabled (removed) when openvswitch is enabled
-#
-# Docker : not advisable to run docker on the Hypervisor(proxmox) directly.
-# Correct way is to create a VM which will be used exclusively for docker.
-# ie. fresh ubuntu lts server with https://github.com/extremeshok/xshok-docker
-################################################################################
-#
-#    THERE ARE NO USER CONFIGURABLE OPTIONS IN THIS SCRIPT
-#
-################################################################################
-
-#####  T O   S E T   Y O U R   O P T I O N S  ######
-# User Defined Options for (install-post.sh) post-installation script for Proxmox
-# are set in the xs-install-post.env, see the sample : xs-install-post.env.sample
-## Alternatively, set the varible via the export
-# Example to disable to motd
-# export XS_MOTD="no" ; bash install-post.sh
-###############################
-#####  D O   N O T   E D I T   B E L O W  ######
 
 #### VARIABLES / options
 # Detect AMD EPYC and Ryzen CPU and Apply Fixes
@@ -178,7 +139,7 @@ if [ -z "$XS_TIMEZONE" ] ; then
 fi
 # Install common system utilities
 if [ -z "$XS_UTILS" ] ; then
-    XS_UTILS="yes"
+    XS_UTILS="no"
 fi
 # Increase vzdump backup speed
 if [ -z "$XS_VZDUMP" ] ; then
@@ -220,7 +181,7 @@ if [ ! -f "/etc/pve/.version" ] ; then
   exit 1
 fi
 
-if [ -f "/etc/extremeshok" ] ; then
+if [ -f "/etc/ameto" ] ; then
   echo "ERROR: Script can only be run once"
   exit 1
 fi
@@ -281,7 +242,7 @@ if [ "${XS_APTUPGRADE,,}" == "yes" ] ; then
 fi
 
 # Install packages which are sometimes missing on some Proxmox installs.
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux proxmox-backup-restore-image chrony
+/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install zfsutils-linux
 
 if [ "${XS_UTILS,,}" == "yes" ] ; then
 # Install common system utilities
@@ -506,7 +467,7 @@ if [ "${XS_PIGZ,,}" == "yes" ] ; then
     /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install pigz
     cat  <<EOF > /bin/pigzwrapper
 #!/bin/sh
-# eXtremeSHOK.com
+# ameto.io
 PATH=/bin:\$PATH
 GZIP="-1"
 exec /usr/bin/pigz "\$@"
@@ -566,7 +527,7 @@ if [ "${XS_NOSUBBANNER,,}" == "yes" ] ; then
       # create a daily cron to make sure the banner does not re-appear
   cat <<'EOF' > /etc/cron.daily/xs-pve-nosub
 #!/bin/sh
-# eXtremeSHOK.com Remove subscription banner
+# ameto.io Remove subscription banner
 sed -i "s/data.status !== 'Active'/false/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
 sed -i "s/checked_command: function(orig_cmd) {/checked_command: function() {} || function(orig_cmd) {/g" /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
 EOF
@@ -581,7 +542,7 @@ if [ "${XS_MOTD,,}" == "yes" ] ; then
 ## Pretty MOTD BANNER
   if ! grep -q https "/etc/motd" ; then
     cat << 'EOF' > /etc/motd.new
-	   This system is optimised by: eXtremeSHOK.com
+	   This system is optimised by: ameto.io
 EOF
 
     cat /etc/motd >> /etc/motd.new
@@ -592,7 +553,7 @@ fi
 if [ "${XS_KERNELPANIC,,}" == "yes" ] ; then
     # Enable restart on kernel panic
     cat <<EOF > /etc/sysctl.d/99-xs-kernelpanic.conf
-# eXtremeSHOK.com
+# ameto.io
 # Enable restart on kernel panic, kernel oops and hardlockup
 kernel.core_pattern=/var/crash/core.%t.%p
 # Reboot on kernel panic afetr 10s
@@ -608,7 +569,7 @@ if [ "${XS_LIMITS,,}" == "yes" ] ; then
     ## Increase max user watches
     # BUG FIX : No space left on device
     cat <<EOF > /etc/sysctl.d/99-xs-maxwatches.conf
-# eXtremeSHOK.com
+# ameto.io
 # Increase max user watches
 fs.inotify.max_user_watches=1048576
 fs.inotify.max_user_instances=1048576
@@ -616,7 +577,7 @@ fs.inotify.max_queued_events=1048576
 EOF
     ## Increase max FD limit / ulimit
     cat <<EOF >> /etc/security/limits.d/99-xs-limits.conf
-# eXtremeSHOK.com
+# ameto.io
 # Increase max FD limit / ulimit
 * soft     nproc          1048576
 * hard     nproc          1048576
@@ -629,7 +590,7 @@ root hard     nofile         unlimited
 EOF
     ## Increase kernel max Key limit
     cat <<EOF > /etc/sysctl.d/99-xs-maxkeys.conf
-# eXtremeSHOK.com
+# ameto.io
 # Increase kernel max Key limit
 kernel.keys.root_maxkeys=1000000
 kernel.keys.maxkeys=1000000
@@ -648,7 +609,7 @@ fi
 if [ "${XS_LOGROTATE,,}" == "yes" ] ; then
     ## Optimise logrotate
     cat <<EOF > /etc/logrotate.conf
-# eXtremeSHOK.com
+# ameto.io
 daily
 su root adm
 rotate 7
@@ -666,7 +627,7 @@ fi
 if [ "${XS_JOURNALD,,}" == "yes" ] ; then
     ## Limit the size and optimise journald
     cat <<EOF > /etc/systemd/journald.conf
-# eXtremeSHOK.com
+# ameto.io
 [Journal]
 # Store on disk
 Storage=persistent
@@ -703,7 +664,7 @@ if [ "${XS_ENTROPY,,}" == "yes" ] ; then
     /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install haveged
     ## Net optimising
     cat <<EOF > /etc/default/haveged
-# eXtremeSHOK.com
+# ameto.io
 #   -w sets low entropy watermark (in bits)
 DAEMON_ARGS="-w 1024"
 EOF
@@ -720,7 +681,7 @@ fi
 if [ "${XS_MEMORYFIXES,,}" == "yes" ] ; then
     ## Optimise Memory
 cat <<EOF > /etc/sysctl.d/99-xs-memory.conf
-# eXtremeSHOK.com
+# ameto.io
 # Memory Optimising
 ## Bugfix: reserve 1024MB memory for system
 vm.min_free_kbytes=1048576
@@ -734,7 +695,7 @@ fi
 if [ "${XS_TCPBBR,,}" == "yes" ] ; then
 ## Enable TCP BBR congestion control
 cat <<EOF > /etc/sysctl.d/99-xs-kernel-bbr.conf
-# eXtremeSHOK.com
+# ameto.io
 # TCP BBR congestion control
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
@@ -744,7 +705,7 @@ fi
 if [ "${XS_TCPFASTOPEN,,}" == "yes" ] ; then
 ## Enable TCP fastopen
 cat <<EOF > /etc/sysctl.d/99-xs-tcp-fastopen.conf
-# eXtremeSHOK.com
+# ameto.io
 # TCP fastopen
 net.ipv4.tcp_fastopen=3
 EOF
@@ -753,7 +714,7 @@ fi
 if [ "${XS_NET,,}" == "yes" ] ; then
 ## Enable Network optimising
 cat <<EOF > /etc/sysctl.d/99-xs-net.conf
-# eXtremeSHOK.com
+# ameto.io
 net.core.netdev_max_backlog=8192
 net.core.optmem_max=8192
 net.core.rmem_max=16777216
@@ -804,7 +765,7 @@ fi
 if [ "${XS_SWAPPINESS,,}" == "yes" ] ; then
     ## Bugfix: high swap usage with low memory usage
     cat <<EOF > /etc/sysctl.d/99-xs-swap.conf
-# eXtremeSHOK.com
+# ameto.io
 # Bugfix: high swap usage with low memory usage
 vm.swappiness=10
 EOF
@@ -813,7 +774,7 @@ fi
 if [ "${XS_MAXFS,,}" == "yes" ] ; then
     ## Increase Max FS open files
     cat <<EOF > /etc/sysctl.d/99-xs-fs.conf
-# eXtremeSHOK.com
+# ameto.io
 # Max FS Optimising
 fs.nr_open=12000000
 fs.file-max=9000000
@@ -858,7 +819,7 @@ if [ "${XS_ZFSARC,,}" == "yes" ] ; then
         MY_ZFS_ARC_MAX=536870912
       fi
       cat <<EOF > /etc/modprobe.d/99-xs-zfsarc.conf
-# eXtremeSHOK.com ZFS tuning
+# ameto.io ZFS tuning
 
 # Use 1/8 RAM for MAX cache, 1/16 RAM for MIN cache, or 1GB
 options zfs zfs_arc_min=$MY_ZFS_ARC_MIN
@@ -898,7 +859,7 @@ if [ "${XS_VFIO_IOMMU,,}" == "yes" ] ; then
     fi
 
     cat <<EOF >> /etc/modules
-# eXtremeSHOK.com
+# ameto.io
 vfio
 vfio_iommu_type1
 vfio_pci
@@ -906,7 +867,7 @@ vfio_virqfd
 
 EOF
     cat <<EOF >> /etc/modprobe.d/blacklist.conf
-# eXtremeSHOK.com
+# ameto.io
 blacklist nouveau
 blacklist lbm-nouveau
 options nouveau modeset=0
@@ -929,9 +890,9 @@ pve-efiboot-tool refresh
 /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' autoremove
 /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' autoclean
 
-echo "# eXtremeSHOK.com" > /etc/extremeshok
-date >> /etc/extremeshok
+echo "# ameto.io" > /etc/ameto
+date >> /etc/ameto
 
 ## Script Finish
 echo -e '\033[1;33m Finished....please restart the system \033[0m'
-echo "Optimisations by https://eXtremeSHOK.com"
+echo "Optimisations by https://ameto.io"
