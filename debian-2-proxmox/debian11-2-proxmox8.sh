@@ -1,39 +1,4 @@
 #!/usr/bin/env bash
-################################################################################
-# This is property of eXtremeSHOK.com
-# You are free to use, modify and distribute, however you may not remove this notice.
-# Copyright (c) Adrian Jon Kriel :: admin@extremeshok.com
-################################################################################
-#
-# Script updates can be found at: https://github.com/extremeshok/xshok-proxmox
-#
-# Debian 12 to Proxmox 8 conversion script
-#
-# License: BSD (Berkeley Software Distribution)
-#
-################################################################################
-#
-# Assumptions: Debian10 installed with a valid FQDN hostname set
-#
-# Tested on KVM, VirtualBox and Dedicated Server
-#
-# Will automatically detect cloud-init and disable.
-# Will automatically generate a correct /etc/hosts
-#
-# Note: will automatically run the install-post.sh script
-#
-# Thank you @floco
-#
-# Usage:
-# curl -O https://raw.githubusercontent.com/extremeshok/xshok-proxmox/master/debian-2-proxmox/debian11-2-proxmox7.sh && chmod +x debian11-2-proxmox7.sh
-# ./debian11-2-proxmox7.sh
-#
-#
-################################################################################
-#
-#    THERE ARE NO USER CONFIGURABLE OPTIONS IN THIS SCRIPT
-#
-################################################################################
 
 #todo : verify and check
 
