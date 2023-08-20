@@ -72,9 +72,6 @@ apt update > /dev/null
 echo "Upgrading system"
 /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' full-upgrade
 
-echo "Upgrading PVE Kernel"
-/usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install -y pve-kernel-6.2
-
 echo "Installing postfix"
 cat <<EOF | debconf-set-selections
 postfix postfix/mailname           string $(cat /etc/hostname)
