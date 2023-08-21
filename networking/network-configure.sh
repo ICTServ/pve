@@ -11,13 +11,15 @@ if ! type "dhcpd" >& /dev/null; then
   /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server
 fi
 
-if ! [ -f "network-addiprange.sh" ]; then
-  echo "Downloading network-addiprange.sh script"
-  curl -O https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange.sh && chmod +x network-addiprange.sh
-fi
-if ! grep -q '#!/usr/bin/env bash' "network-addiprange.sh"; then
-  echo "ERROR: network-addiprange.sh is invalid"
-fi
+# if ! [ -f "network-addiprange.sh" ]; then
+#   echo "Downloading network-addiprange.sh script"
+#   curl -O https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange.sh && chmod +x network-addiprange.sh
+# fi
+# if ! grep -q '#!/usr/bin/env bash' "network-addiprange.sh"; then
+#   echo "ERROR: network-addiprange.sh is invalid"
+# fi
+
+curl -sLS https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange.sh | sh
 
 if ! [ -f "/etc/sysctl.d/99-networking.conf" ]; then
   echo "Creating /etc/sysctl.d/99-networking.conf"
