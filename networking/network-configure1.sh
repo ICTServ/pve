@@ -16,7 +16,7 @@ fi
 
 if ! [ -f "network-addiprange.sh" ]; then
   echo "Downloading network-addiprange.sh script"
-  curl -O https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange.sh && chmod +x network-addiprange.sh
+  curl -O https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange1.sh && chmod +x network-addiprange.sh
 fi
 
 if ! grep -q '#!/usr/bin/env bash' "network-addiprange.sh"; then
