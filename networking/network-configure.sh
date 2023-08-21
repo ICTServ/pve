@@ -11,7 +11,7 @@ network_interfaces_file="/etc/network/interfaces"
 #   /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server 
 # fi
 if ! type "dhcpd" > /dev/null; then
-  /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server  > /dev/null 2>&1 &
+  /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server
 fi
 
 if ! [ -f "network-addiprange.sh" ]; then
@@ -82,7 +82,6 @@ IFS='.' read -r -a default_v4ip_array <<< "$default_v4ip"
 cp "$network_interfaces_file" "${network_interfaces_file}.$(date +"%Y-%m-%d_%H-%M-%S")"
 
 cat > "$network_interfaces_file" <<EOF
-###### eXtremeSHOK.com
 
 ### LOOPBACK ###
 auto lo
@@ -184,12 +183,12 @@ cat > /etc/default/isc-dhcp-server <<EOF
 # Defaults for isc-dhcp-server (sourced by /etc/init.d/isc-dhcp-server)
 
 # Path to dhcpd's config file (default: /etc/dhcp/dhcpd.conf).
-#DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
-#DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
+DHCPDv4_CONF=/etc/dhcp/dhcpd.conf
+DHCPDv6_CONF=/etc/dhcp/dhcpd6.conf
 
 # Path to dhcpd's PID file (default: /var/run/dhcpd.pid).
-#DHCPDv4_PID=/var/run/dhcpd.pid
-#DHCPDv6_PID=/var/run/dhcpd6.pid
+DHCPDv4_PID=/var/run/dhcpd.pid
+DHCPDv6_PID=/var/run/dhcpd6.pid
 
 # Additional options to start dhcpd with.
 #       Don't use options -cf or -pf here; use DHCPD_CONF/ DHCPD_PID instead
@@ -198,11 +197,11 @@ cat > /etc/default/isc-dhcp-server <<EOF
 # On what interfaces should the DHCP server (dhcpd) serve DHCP requests?
 #       Separate multiple interfaces with spaces, e.g. "eth0 eth1".
 INTERFACESv4="vmbr0 vmbr1"
-#INTERFACESv6="vmbr0"
+INTERFACESv6="vmbr0"
 EOF
 
 cat > /etc/dhcp/dhcpd.conf <<EOF
-### eXtremeSHOK.com
+### ameto.io
 # https://linux.die.net/man/5/dhcpd.conf
 
 ddns-update-style none;
@@ -275,6 +274,7 @@ EOF
 fi
 
 systemctl enable isc-dhcp-server
+systemctl restart isc-dhcp-server
 
 ## Script Finish
 echo -e '\033[1;33m Finished....please restart the system \033[0m'
