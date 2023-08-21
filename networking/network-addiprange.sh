@@ -1,34 +1,5 @@
 #!/usr/bin/env bash
-################################################################################
-# This is property of eXtremeSHOK.com
-# You are free to use, modify and distribute, however you may not remove this notice.
-# Copyright (c) Adrian Jon Kriel :: admin@extremeshok.com
-################################################################################
-#
-# Script updates can be found at: https://github.com/extremeshok/xshok-proxmox
-#
-# License: BSD (Berkeley Software Distribution)
-#
-################################################################################
-#
-# Creates default routes to allow for extra ip ranges to be used.
-# Tested on OVH servers with VLAN
-#
-# NOTE: WILL APPLY CHANGES TO /etc/network/interfaces
-#
-# Usage:
-# curl -O https://raw.githubusercontent.com/extremeshok/xshok-proxmox/master/networking/network-addiprange.sh && chmod +x network-addiprange.sh
-# ./network-addiprange.sh ip.xx.xx.xx/cidr interface_optional
-# ./network-addiprange.sh ip.xx.xx.xx / cidr interface_optional
-# ./network-addiprange.sh ip.xx.xx.xx interface_optional
-#
-# If no interface is specified the default gateway interface will be used.
-#
-################################################################################
-#
-#    THERE ARE NO USER CONFIGURABLE OPTIONS IN THIS SCRIPT
-#
-##############################################################
+
 
 # Set the local
 export LANG="en_US.UTF-8"
