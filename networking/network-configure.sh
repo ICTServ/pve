@@ -7,8 +7,11 @@ export LC_ALL="C"
 network_interfaces_file="/etc/network/interfaces"
 
 #Detect and install dependencies
-if ! type "dhcpd" >& /dev/null; then
-  /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server
+# if ! type "dhcpd" >& /dev/null; then
+#   /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server 
+# fi
+if ! type "dhcpd" > /dev/null; then
+  /usr/bin/env DEBIAN_FRONTEND=noninteractive apt -y -o Dpkg::Options::='--force-confdef' install isc-dhcp-server  > /dev/null 2>&1 &
 fi
 
 if ! [ -f "network-addiprange.sh" ]; then
