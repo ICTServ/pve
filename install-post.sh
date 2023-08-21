@@ -115,7 +115,7 @@ if [ -z "$XS_PIGZ" ] ; then
 fi
 # Bugfix: high swap usage with low memory usage
 if [ -z "$XS_SWAPPINESS" ] ; then
-    XS_SWAPPINESS="no"
+    XS_SWAPPINESS="yes"
 fi
 # Enable TCP BBR congestion control
 if [ -z "$XS_TCPBBR" ] ; then
@@ -135,7 +135,7 @@ if [ -z "$XS_TIMESYNC" ] ; then
 fi
 # Set Timezone, empty = set automatically by IP
 if [ -z "$XS_TIMEZONE" ] ; then
-    XS_TIMEZONE="Africa/Addis_Ababa"
+    XS_TIMEZONE=""
 fi
 # Install common system utilities
 if [ -z "$XS_UTILS" ] ; then
