@@ -18,6 +18,7 @@ if ! [ -f "network-addiprange.sh" ]; then
   echo "Downloading network-addiprange.sh script"
   curl -O https://raw.githubusercontent.com/ICTServ/pve/main/networking/network-addiprange.sh && chmod +x network-addiprange.sh
 fi
+
 if ! grep -q '#!/usr/bin/env bash' "network-addiprange.sh"; then
   echo "ERROR: network-addiprange.sh is invalid"
 fi
@@ -273,8 +274,7 @@ cat > "/etc/dhcp/hosts.public" <<EOF
 EOF
 fi
 
-systemctl enable isc-dhcp-server
-systemctl restart isc-dhcp-server
+systemctl enable isc-dhcp-server && systemctl restart isc-dhcp-server
 
 ## Script Finish
 echo -e '\033[1;33m Finished....please restart the system \033[0m'
